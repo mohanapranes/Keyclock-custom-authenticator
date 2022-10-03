@@ -14,7 +14,7 @@ import java.util.List;
 public class EmailOTPAuthFactory implements AuthenticatorFactory {
   public static final EmailOTPAuth SINGLETON = new EmailOTPAuth();
 
-  public static final String PROVIDER_ID = "custom-username-form";
+  public static final String PROVIDER_ID = "send-email-otp-form";
 
   @Override
   public String getDisplayType() {
