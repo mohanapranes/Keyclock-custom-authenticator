@@ -50,26 +50,25 @@ public class DobAuth implements Authenticator{
 
         if (validateForm(authenticationFlowContext, formData)) {
             if (validAuthorization(authenticationFlowContext,formData)) {
-                String dob= userModel.getAttributes().get("dateOfBirth").get(0);
                 authenticationFlowContext.success();
             } else {
-                authenticationFlowContext.getEvent().error(Errors.ACCESS_DENIED);
-                LoginFormsProvider form = authenticationFlowContext.form().setExecution(authenticationFlowContext.getExecution().getId());
-                form.addError(new FormMessage(FIELD, NOT_AUTHORISED));
-                authenticationFlowContext.resetFlow();
+                resetFlow(authenticationFlowContext,Errors.ACCESS_DENIED,NOT_AUTHORISED);
             }
         } else {
             defaultBruteForceProtector.failedLogin(realmModel, userModel, authenticationFlowContext.getConnection());
             if (defaultBruteForceProtector.isTemporarilyDisabled(session, realmModel, userModel)) {
-                authenticationFlowContext.getEvent().error(Errors.USER_DISABLED);
-                LoginFormsProvider form = authenticationFlowContext.form().setExecution(authenticationFlowContext.getExecution().getId());
-                form.addError(new FormMessage(FIELD, BRUTE_FORCE));
-                authenticationFlowContext.resetFlow();
+                resetFlow(authenticationFlowContext,Errors.USER_DISABLED,BRUTE_FORCE);
                 return;
             }
             badDoBHandler(authenticationFlowContext, userModel);
 
         }
+    }
+    private void resetFlow(AuthenticationFlowContext authenticationFlowContext,String error,String message){
+        authenticationFlowContext.getEvent().error(error);
+        LoginFormsProvider form = authenticationFlowContext.form().setExecution(authenticationFlowContext.getExecution().getId());
+        form.addError(new FormMessage(FIELD,message));
+        authenticationFlowContext.resetFlow();
     }
     private void badDoBHandler(AuthenticationFlowContext context, UserModel user) {
         context.getEvent().user(user);

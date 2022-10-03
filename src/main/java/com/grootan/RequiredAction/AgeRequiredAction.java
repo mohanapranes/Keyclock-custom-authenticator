@@ -38,6 +38,7 @@ public class AgeRequiredAction implements RequiredActionProvider, RequiredAction
 
     @Override
     public RequiredActionProvider create(KeycloakSession session) {
+        session.
         LOGGER.info(NAME+" create working");
         return this;
     }
