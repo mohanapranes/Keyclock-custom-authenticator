@@ -1,10 +1,7 @@
 package com.grootan.Authenticator;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class Constants {
-    public static final String FIELD = "dateOfBirth";
+    public static final String DATE_OF_BIRTH = "dateOfBirth";
     public static final String WRONG_CREDENTIALS = "Date of birth doesn't match";
     public static final String NOT_AUTHORISED = "you are not authorized for this page";
     public static final String BRUTE_FORCE = "you are account temporary blocked";

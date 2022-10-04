@@ -22,15 +22,15 @@ import java.lang.String;
 
 import static com.grootan.Authenticator.Constants.*;
 
-public class DobAuth implements Authenticator{
+public class DobAuth implements Authenticator {
 
 
     @Override
     public void authenticate(AuthenticationFlowContext authenticationFlowContext) {
-        if (authenticationFlowContext.getUser().getFirstAttribute(FIELD) == null) {
+        if (authenticationFlowContext.getUser().getFirstAttribute(DATE_OF_BIRTH) == null) {
             authenticationFlowContext.getEvent().error(Errors.USER_NOT_FOUND);
             LoginFormsProvider form = authenticationFlowContext.form().setExecution(authenticationFlowContext.getExecution().getId());
-            form.addError(new FormMessage(FIELD, DOB_NOT_FOUND));
+            form.addError(new FormMessage(DATE_OF_BIRTH, DOB_NOT_FOUND));
             authenticationFlowContext.resetFlow();
             return;
         }
@@ -49,27 +49,29 @@ public class DobAuth implements Authenticator{
         DefaultBruteForceProtector defaultBruteForceProtector = new DefaultBruteForceProtector(keycloakSessionFactory);
 
         if (validateForm(authenticationFlowContext, formData)) {
-            if (validAuthorization(authenticationFlowContext,formData)) {
+            if (validAuthorization(authenticationFlowContext, formData)) {
                 authenticationFlowContext.success();
             } else {
-                resetFlow(authenticationFlowContext,Errors.ACCESS_DENIED,NOT_AUTHORISED);
+                resetFlow(authenticationFlowContext, Errors.ACCESS_DENIED, NOT_AUTHORISED);
             }
         } else {
             defaultBruteForceProtector.failedLogin(realmModel, userModel, authenticationFlowContext.getConnection());
             if (defaultBruteForceProtector.isTemporarilyDisabled(session, realmModel, userModel)) {
-                resetFlow(authenticationFlowContext,Errors.USER_DISABLED,BRUTE_FORCE);
+                resetFlow(authenticationFlowContext, Errors.USER_DISABLED, BRUTE_FORCE);
                 return;
             }
             badDoBHandler(authenticationFlowContext, userModel);
 
         }
     }
-    private void resetFlow(AuthenticationFlowContext authenticationFlowContext,String error,String message){
+
+    private void resetFlow(AuthenticationFlowContext authenticationFlowContext, String error, String message) {
         authenticationFlowContext.getEvent().error(error);
         LoginFormsProvider form = authenticationFlowContext.form().setExecution(authenticationFlowContext.getExecution().getId());
-        form.addError(new FormMessage(FIELD,message));
+        form.addError(new FormMessage(DATE_OF_BIRTH, message));
         authenticationFlowContext.resetFlow();
     }
+
     private void badDoBHandler(AuthenticationFlowContext context, UserModel user) {
         context.getEvent().user(user);
         context.getEvent().error(Errors.INVALID_USER_CREDENTIALS);
@@ -77,10 +79,10 @@ public class DobAuth implements Authenticator{
         context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, challengeResponse);
     }
 
-    private boolean validAuthorization(AuthenticationFlowContext context,MultivaluedMap<String, String> formData) {
+    private boolean validAuthorization(AuthenticationFlowContext context, MultivaluedMap<String, String> formData) {
         Map<String, String> config = context.getAuthenticatorConfig().getConfig();
         String attributeName = config.get(ConditionalUserAttributeValueFactory.CONF_ATTRIBUTE_NAME);
-        String userDoB = formData.getFirst(FIELD);
+        String userDoB = formData.getFirst(DATE_OF_BIRTH);
         return calculateAge(userDoB) > Integer.parseInt(attributeName);
     }
 
@@ -93,13 +95,13 @@ public class DobAuth implements Authenticator{
 
     private Response challenge(AuthenticationFlowContext context, String error, String fileName) {
         LoginFormsProvider form = context.form().setExecution(context.getExecution().getId());
-        form.addError(new FormMessage(FIELD, error));
+        form.addError(new FormMessage(DATE_OF_BIRTH, error));
         return form.createForm(fileName);
     }
 
     private boolean validateForm(AuthenticationFlowContext context, MultivaluedMap<String, String> formData) {
-        String userDoB = formData.getFirst(FIELD);
-        String dob = context.getUser().getAttributes().get(FIELD).get(0);
+        String userDoB = formData.getFirst(DATE_OF_BIRTH);
+        String dob = context.getUser().getAttributes().get(DATE_OF_BIRTH).get(0);
         return userDoB.equals(dob);
     }
 
