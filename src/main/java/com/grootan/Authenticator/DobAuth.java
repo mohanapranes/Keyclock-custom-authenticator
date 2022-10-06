@@ -48,7 +48,6 @@ public class DobAuth implements Authenticator {
         KeycloakSessionFactory keycloakSessionFactory = session.getKeycloakSessionFactory();
         DefaultBruteForceProtector defaultBruteForceProtector = new DefaultBruteForceProtector(keycloakSessionFactory);
 
-        userModel.addRequiredAction(BROWSER_REQUIRED_ACTION);
 
         if (validateForm(authenticationFlowContext, formData)) {
             if (validAuthorization(authenticationFlowContext, formData)) {
