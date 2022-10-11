@@ -3,20 +3,21 @@ package com.grootan.Authenticator;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
+import org.keycloak.email.EmailSenderProviderFactory;
 import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
-import org.keycloak.models.credential.PasswordCredentialModel;
 import org.keycloak.provider.ProviderConfigProperty;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-public class DobAuthFactory implements AuthenticatorFactory {
-    public final static DobAuth SINGLETON = new DobAuth();
+import static com.grootan.Authenticator.Constants.PROVIDER_EMAIL;
 
-    public static final String PROVIDER_ID = "custom-date-of-birth-form";
-    public static final String DISPLAY_TYPE = "DateOfBirthAuth";
+public class EmailSenderAuthFactory implements AuthenticatorFactory {
+
+    public static final EmailSenderAuth SINGLETON = new EmailSenderAuth();
+    public static final String PROVIDER_ID = "EmailSender";
+    public static final String DISPLAY_TYPE = "email-sender";
 
     @Override
     public String getDisplayType() {
@@ -25,7 +26,7 @@ public class DobAuthFactory implements AuthenticatorFactory {
 
     @Override
     public String getReferenceCategory() {
-        return PasswordCredentialModel.TYPE;
+        return null;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class DobAuthFactory implements AuthenticatorFactory {
 
     @Override
     public boolean isUserSetupAllowed() {
-        return true;
+        return false;
     }
 
     @Override
@@ -55,13 +56,22 @@ public class DobAuthFactory implements AuthenticatorFactory {
 
     @Override
     public List<ProviderConfigProperty> getConfigProperties() {
-        ProviderConfigProperty authNoteName = new ProviderConfigProperty();
-        authNoteName.setType(ProviderConfigProperty.STRING_TYPE);
-        authNoteName.setName(Constants.CONF_ATTRIBUTE_NAME);
-        authNoteName.setLabel("Age");
-        authNoteName.setHelpText("Age for verifying user");
 
-        return Arrays.asList(authNoteName);
+        List<String> emailSenderProviderList = new ArrayList<>();
+        ServiceLoader<EmailSenderProviderFactory> emailSenderProviders = ServiceLoader.load(EmailSenderProviderFactory.class);
+        emailSenderProviders.forEach(emailSenderProvider -> {
+            emailSenderProviderList.add(emailSenderProvider.getId());
+        });
+
+
+
+        ProviderConfigProperty providerConfigProperty = new ProviderConfigProperty();
+        providerConfigProperty.setType(ProviderConfigProperty.LIST_TYPE);
+        providerConfigProperty.setName(PROVIDER_EMAIL);
+        providerConfigProperty.setLabel(PROVIDER_EMAIL);
+        providerConfigProperty.setOptions(emailSenderProviderList);
+
+        return Collections.singletonList(providerConfigProperty);
     }
 
     @Override

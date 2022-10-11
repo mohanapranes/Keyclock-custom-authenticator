@@ -1,2 +1,3 @@
 com.grootan.Authenticator.DobAuthFactory
 com.grootan.Authenticator.EmailOTPAuthFactory
+com.grootan.Authenticator.EmailSenderAuthFactory

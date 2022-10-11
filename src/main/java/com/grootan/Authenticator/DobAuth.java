@@ -35,7 +35,7 @@ public class DobAuth implements Authenticator {
             return;
         }
         LoginFormsProvider formsProvider = authenticationFlowContext.form();
-        Response response = formsProvider.createForm("dob.ftl");
+        Response response = formsProvider.createForm(DOB_FTL);
         authenticationFlowContext.challenge(response);
     }
 

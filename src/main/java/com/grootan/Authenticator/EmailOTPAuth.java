@@ -16,11 +16,13 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.util.Random;
 
+import static com.grootan.Authenticator.Constants.OTP_FTL;
+
 public class EmailOTPAuth implements Authenticator {
   @Override
   public void authenticate(AuthenticationFlowContext context) {
     LoginFormsProvider formsProvider = context.form();
-    Response challengeResponse = formsProvider.createForm("otp.ftl");
+    Response challengeResponse = formsProvider.createForm(OTP_FTL);
     try {
       context.getAuthenticationSession().setAuthNote("otp", generateAndSendOtp(context));
     } catch (EmailException e) {
@@ -63,7 +65,7 @@ public class EmailOTPAuth implements Authenticator {
   protected Response challenge(AuthenticationFlowContext context, String error) {
     LoginFormsProvider form = context.form().setExecution(context.getExecution().getId());
     form.addError(new FormMessage("OTP", error));
-    return form.createForm("otp.ftl");
+    return form.createForm(OTP_FTL);
   }
 
   protected boolean validateForm(
