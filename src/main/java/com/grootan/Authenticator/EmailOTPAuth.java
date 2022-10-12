@@ -16,7 +16,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.util.Random;
 
-import static com.grootan.Authenticator.Constants.OTP_FTL;
+import static com.grootan.Constants.OTP_FTL;
 
 public class EmailOTPAuth implements Authenticator {
   @Override

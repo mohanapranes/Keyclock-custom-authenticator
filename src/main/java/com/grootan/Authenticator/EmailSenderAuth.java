@@ -11,11 +11,12 @@ import org.keycloak.models.UserModel;
 import org.keycloak.email.EmailSenderProviderFactory;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
-import static com.grootan.Authenticator.Constants.*;
+import static com.grootan.Constants.*;
 
 public class EmailSenderAuth implements Authenticator {
 
@@ -31,17 +32,28 @@ public class EmailSenderAuth implements Authenticator {
     public void action(AuthenticationFlowContext context) {
 
         UserModel userModel = context.getUser();
+
         MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
-        Map<String, String> config = context.getAuthenticatorConfig().getConfig();
-        String configEmailProvider = config.get(PROVIDER_EMAIL);
+        Map<String, String> authConfig = context.getAuthenticatorConfig().getConfig();
+        String AuthConfigEmailProvider = authConfig.get(PROVIDER_EMAIL);
+        Map<String,String> emailProviderConfig = new HashMap<>();
+
+        if(AuthConfigEmailProvider.equals(DEFAULT_EMAIL_PROVIDER)){
+            emailProviderConfig = context.getRealm().getSmtpConfig();
+        }
+        else if(AuthConfigEmailProvider.equals(SENDGRID_EMAIL_PROVIDER)) {
+           emailProviderConfig = context.getRealm().getSendgridConfig();
+        }
+
         ServiceLoader<EmailSenderProviderFactory> emailSenderProviderFactories = ServiceLoader.load(EmailSenderProviderFactory.class);
+        Map<String, String> finalEmailProviderConfig = emailProviderConfig;
         emailSenderProviderFactories.forEach(emailSenderProviderFactory->{
-            if(emailSenderProviderFactory.getId().equals(configEmailProvider)){
-                LOGGER.info("email sender provider factory is present");
+            if(emailSenderProviderFactory.getId().equals(AuthConfigEmailProvider)){
+                LOGGER.info(AuthConfigEmailProvider+" factory is present");
                 EmailSenderProvider emailSenderProvider = emailSenderProviderFactory.create(context.getSession());
                 try {
-                    emailSenderProvider.send(config, formData.get(EMAIL).toString(),"hai","","hai");
-                    LOGGER.info("Email send completed");
+                    emailSenderProvider.send(finalEmailProviderConfig, formData.getFirst(EMAIL),"hai","","hai");
+
 
                 } catch (EmailException e) {
                     throw new RuntimeException(e);

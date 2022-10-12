@@ -11,7 +11,7 @@ import org.keycloak.provider.ProviderConfigProperty;
 
 import java.util.*;
 
-import static com.grootan.Authenticator.Constants.PROVIDER_EMAIL;
+import static com.grootan.Constants.PROVIDER_EMAIL;
 
 public class EmailSenderAuthFactory implements AuthenticatorFactory {
 

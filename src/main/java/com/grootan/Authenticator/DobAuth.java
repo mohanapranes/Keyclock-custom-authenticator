@@ -20,7 +20,7 @@ import java.time.Period;
 import java.util.Map;
 import java.lang.String;
 
-import static com.grootan.Authenticator.Constants.*;
+import static com.grootan.Constants.*;
 
 public class DobAuth implements Authenticator {
 

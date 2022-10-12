@@ -1,4 +1,4 @@
-package com.grootan.Authenticator;
+package com.grootan;
 
 public class Constants {
     public static final String DATE_OF_BIRTH = "dateOfBirth";
@@ -16,4 +16,6 @@ public class Constants {
     public static final String API_KEY = "apiKey";
     public static final String FROM_EMAIL = "from";
     public static final String EMAIL = "email";
+    public static final String DEFAULT_EMAIL_PROVIDER = "default";
+    public static final String SENDGRID_EMAIL_PROVIDER = "SendgridEmail";
 }

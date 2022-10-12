@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.grootan.Authenticator.Constants.*;
+import static com.grootan.Constants.*;
 
 public class BrowserRequiredAction implements RequiredActionProvider, RequiredActionFactory {
     private static final Logger LOGGER = Logger.getLogger(BrowserRequiredAction.class.getName());

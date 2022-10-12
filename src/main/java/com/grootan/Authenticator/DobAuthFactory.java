@@ -1,5 +1,6 @@
 package com.grootan.Authenticator;
 
+import com.grootan.Constants;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;

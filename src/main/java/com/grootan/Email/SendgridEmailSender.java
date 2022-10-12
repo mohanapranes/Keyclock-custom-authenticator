@@ -12,7 +12,7 @@ import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.*;
 
-import static com.grootan.Authenticator.Constants.*;
+import static com.grootan.Constants.*;
 
 public class SendgridEmailSender implements EmailSenderProvider {
     private final KeycloakSession session;
@@ -24,14 +24,14 @@ public class SendgridEmailSender implements EmailSenderProvider {
 
     @Override
     public void send(Map<String, String> config, String address, String subject, String textBody, String htmlBody) throws EmailException {
-        Email from = new Email("mohanapraneswaran@gmail.com");
+        Email from = new Email(config.get(FROM_EMAIL));
         Email to = new Email(address); // use your own email address here
 
         Content content = new Content("text/html", htmlBody);
 
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid("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");
+        SendGrid sg = new SendGrid(config.get(API_KEY));
         Request request = new Request();
 
         request.setMethod(Method.POST);
@@ -47,6 +47,7 @@ public class SendgridEmailSender implements EmailSenderProvider {
         LOGGER.info(String.valueOf(response.getStatusCode()));
         LOGGER.info(String.valueOf(response.getHeaders()));
         LOGGER.info(response.getBody());
+        LOGGER.info("Email send completed to -> "+address);
     }
 
     @Override
